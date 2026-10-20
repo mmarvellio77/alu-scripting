@@ -6,7 +6,7 @@ import requests
 def top_ten(subreddit):
     """Print the titles of the first 10 hot posts of a given subreddit.
 
-    Prints None if the subreddit is invalid.
+    Returns "OK" on success and prints None if the subreddit is invalid.
     """
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {
@@ -19,12 +19,14 @@ def top_ten(subreddit):
 
     if response.status_code != 200:
         print("None")
-        return
+        return None
 
     children = (response.json().get("data") or {}).get("children")
     if not children:
         print("None")
-        return
+        return None
 
     for post in children[:10]:
         print((post.get("data") or {}).get("title"))
+
+    return "OK"
