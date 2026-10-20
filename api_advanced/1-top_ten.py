@@ -5,7 +5,10 @@ import requests
 
 
 def top_ten(subreddit):
-    """Main function"""
+    """Print the titles of the first 10 hot posts of a subreddit.
+
+    Prints None for an invalid subreddit, and returns "OK".
+    """
     URL = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
 
     HEADERS = {"User-Agent": "PostmanRuntime/7.35.0"}
@@ -15,3 +18,5 @@ def top_ten(subreddit):
         [print(post.get('data').get('title')) for post in HOT_POSTS]
     except Exception:
         print(None)
+
+    return "OK"
