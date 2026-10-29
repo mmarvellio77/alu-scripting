@@ -1,22 +1,24 @@
 #!/usr/bin/python3
-"""Prints the title of the first 10 hot posts listed for a given subreddit"""
-
+"""Prints the titles of the first 10 hot posts of a subreddit."""
 import requests
 
 
 def top_ten(subreddit):
-    """Print the titles of the first 10 hot posts of a subreddit.
-
-    Prints None for an invalid subreddit, and returns "OK".
-    """
-    URL = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
-
-    HEADERS = {"User-Agent": "PostmanRuntime/7.35.0"}
-    try:
-        RESPONSE = requests.get(URL, headers=HEADERS, allow_redirects=False)
-        HOT_POSTS = RESPONSE.json().get("data").get("children")
-        [print(post.get('data').get('title')) for post in HOT_POSTS]
-    except Exception:
+    """Print the first 10 hot post titles, or None if invalid."""
+    if not subreddit or not isinstance(subreddit, str):
         print(None)
-
-    return "OK"
+        return
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    headers = {"User-Agent": "linux:alu.top_ten:v1.0 (by /u/mmarvellio77)"}
+    params = {"limit": 10}
+    try:
+        res = requests.get(url, headers=headers, params=params,
+                           allow_redirects=False, timeout=10)
+        if res.status_code != 200:
+            print(None)
+            return
+        posts = res.json().get("data", {}).get("children", [])
+        for post in posts[:10]:
+            print(post.get("data", {}).get("title"))
+    except (requests.RequestException, ValueError):
+        print(None)
